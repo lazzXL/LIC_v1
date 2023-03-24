@@ -3,17 +3,17 @@ import isel.leic.UsbPort
 var output = 0
 
 fun main (args: Array<String>) {
-        init()
+    init()
 
-            //val value = UsbPort.read()
-            //UsbPort.write(9)
-            //println(value)
-        setBits(9)
-        clrBits(1)
+    //val value = UsbPort.read()
+    //UsbPort.write(9)
+    //println(value)
+    setBits(15)
+    writeBits(15, 7)
+    println(readBits(15))
 
 
-
-    }
+}
 
 fun init(){
     UsbPort.write(0)
@@ -26,13 +26,17 @@ fun isBit(mask: Int): Boolean{
 }
 
 
-// Retorna os valores dos bits representados por mask presentes no UsbPort
+// Retorna os valores dos bits representados por mask
 fun readBits(mask: Int): Int{
-    val read = UsbPort.read()
-    return 1
+    return mask.and(output)
 }
 
+// Coloca os bits representados por mask no valor de value
 fun writeBits(mask: Int, value: Int) {
+    val write = mask.and(value)
+    UsbPort.write(write)
+    output = write
+
 
 }
 
@@ -48,4 +52,3 @@ fun clrBits(mask: Int) {
     UsbPort.write(write)
     output = write
 }
-
