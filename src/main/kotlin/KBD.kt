@@ -13,7 +13,7 @@ object KBD{ // Ler teclas. Métodos retornam ‘0’..’9’,’#’,’*’ ou
     // Inicia a classe
     fun init(){
         if (!initialized) {
-            HAL.clrBits(16)
+            HAL.clrBits(1)
             HAL.init()
             initialized = true
         }
