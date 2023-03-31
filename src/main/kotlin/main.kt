@@ -1,8 +1,8 @@
 fun main(){
-    KBD.init()
-    while(true){
-        Thread.sleep(1000)
-        println(KBD.waitKey(5000))
-    }
+    //KBD.init()
+    //while(true){
+    //    println(KBD.getKey())
+    //    Thread.sleep(500)
+    //    }
+    LCD.clear()
 }
-

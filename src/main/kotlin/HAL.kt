@@ -3,15 +3,6 @@ import isel.leic.UsbPort
 object HAL {
     private var output = 0
 
-    //fun main() {
-    //init()
-    //isBit(2)
-    //readBits(5)
-    //setBits(15)
-    //clrBits(1)
-    //writeBits(9, 2)
-    //}
-
     fun init() {
         UsbPort.write(0)
     }
@@ -23,7 +14,6 @@ object HAL {
 
     // Retorna os valores dos bits representados por mask
     fun readBits(mask: Int): Int = mask.and(UsbPort.read())
-// Nice
 
 
     // Coloca os bits representados por mask no valor de value
@@ -32,7 +22,6 @@ object HAL {
         UsbPort.write(write)
         output = write
     }
-//Nice
 
 
     // Coloca os bits representados por mask no valor lógico ‘1’
@@ -41,7 +30,6 @@ object HAL {
         UsbPort.write(write)
         output = write
     }
-//Nice
 
 
     // Coloca os bits representados por mask no valor lógico ‘0’
@@ -51,7 +39,7 @@ object HAL {
         UsbPort.write(write)
         output = write
     }
-//Nice
+
 
     /*
 fun clrBitsOld(mask: Int) {
