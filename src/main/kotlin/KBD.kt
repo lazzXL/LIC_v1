@@ -14,7 +14,7 @@ object KBD{ // Ler teclas. Métodos retornam ‘0’..’9’,’#’,’*’ ou
     }
 
     // Retorna de imediato a tecla premida ou NONE se não há tecla premida.
-    fun getKey(): Char {
+    private fun getKey(): Char {
         if(HAL.isBit(16)) {
             // Read the bits from the keypad
             val bits = HAL.readBits(15)
