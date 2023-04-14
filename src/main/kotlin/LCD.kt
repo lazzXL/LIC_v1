@@ -55,7 +55,7 @@ object LCD { // Writes to the LCD using the 4-bit interface.
 
 
     // Writes a character at the current position.
-    fun writeChar(c: Char){
+    private fun writeChar(c: Char){
         writeDATA(c.code)
     }
 
@@ -68,17 +68,26 @@ object LCD { // Writes to the LCD using the 4-bit interface.
 
     // Sends a command to position the cursor (‘line’:0..LINES-1 , ‘column’:0..COLS-1)
     fun cursor(line: Int, column: Int){
-        var address: Int = when (line) {
-            0 -> 0x00
-            1 -> 0x40
-            else -> throw IllegalArgumentException("Invalid line number: $line")
+        if(line in 0 until LINES-1 && column in 0 until COLS-1) {
+            var address: Int = when (line) {
+                0 -> 0x00
+                else -> 0x40
+            }
+            address += column
+            writeCMD(address + 128)  //DB7 = 1 = 128
         }
-        address += column
     }
 
     // Sends a command to clear the screen and position the cursor at (0,0)
     fun clear() {
         writeCMD(1)
+    }
+
+    fun main(){
+        init()
+        clear()
+        writeString("TEST")
+        cursor(1,7)
     }
 }
 
