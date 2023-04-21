@@ -1,3 +1,11 @@
+import LCD.clear
+import LCD.cursor
+import LCD.init
+import LCD.writeNibbleSerial
+import LCD.writeString
+import kotlin.math.floor
+import kotlin.math.pow
+
 object LCD { // Writes to the LCD using the 4-bit interface.
 
     //MUDAR HARDWARE SIMUL
@@ -18,11 +26,23 @@ object LCD { // Writes to the LCD using the 4-bit interface.
         HAL.clrBits(4)                    //Enable 0
         Thread.sleep(0,T_C- T_W)
     }
+    fun extractBit(data: Int, k: Int): Int {
+        return (data shr k) and 1
+    }
 
     // Writes a command/data nibble to the LCD in series
-    //private fun writeNibbleSerial(rs: Boolean, data: Int) {
-    //    return 1
-    //}
+    fun writeNibbleSerial(rs: Boolean, data: Int) {
+        val rsToInt = if (rs) 0b1000000 else 0b0000000
+        for (k in 4 downTo 0) {
+            if (k == 4) HAL.writeBits(64, rsToInt)
+            else {
+               val currentBit = extractBit(data, (k))
+                HAL.writeBits(64, currentBit shl 6)
+                Thread.sleep(0, 500)
+
+            }
+        }
+    }
 
     // Writes a command/data nibble to the LCD
     private fun writeNibble(rs: Boolean, data: Int) {
@@ -44,13 +64,25 @@ object LCD { // Writes to the LCD using the 4-bit interface.
 
     // Sends the initialization sequence for 4-bit communication. //writeNibble e writeCMD
     fun init(){
-        Thread.sleep(20)
+        Thread.sleep(110)
         writeNibble(false,3)
         Thread.sleep(5)
         writeNibble(false,3)
-        Thread.sleep(0,100000)
+        Thread.sleep(1)
         writeNibble(false,3)
-        writeNibble(false,2)
+        Thread.sleep(1)
+        writeCMD(0b0011)
+        writeCMD(0b0010)
+        writeCMD(0b0010)
+        writeCMD(0b1100)
+        writeCMD(0b0000)
+        writeCMD(0b1000)
+        writeCMD(0b0000)
+        writeCMD(0b0001)
+        writeCMD(0b0000)
+        writeCMD(0b0110)
+        writeCMD(0b1111)
+
     }
 
 
@@ -83,12 +115,9 @@ object LCD { // Writes to the LCD using the 4-bit interface.
         writeCMD(1)
     }
 
-    fun main(){
-        init()
-        clear()
-        writeString("TEST")
-        cursor(1,7)
-    }
 }
-
+fun main(){
+    LCD.clear()
+    LCD.init()
+}
 
