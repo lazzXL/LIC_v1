@@ -1,7 +1,5 @@
 object LCD { // Writes to the LCD using the 4-bit interface.
 
-    //MUDAR HARDWARE SIMUL
-
     private const val COLS = 16 // Dimensions of the display.
     private const val LINES = 2
 
@@ -101,15 +99,3 @@ object LCD { // Writes to the LCD using the 4-bit interface.
     }
 
 }
-/*
-fun main(){
-    /*LCD.init()
-    LCD.writeString("teste teste")
-    LCD.clear()
-    LCD.writeString("lol")
-    LCD.cursor(1,5)
-    */
-
-}
-
-*/
