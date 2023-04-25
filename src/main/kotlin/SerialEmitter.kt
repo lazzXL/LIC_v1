@@ -16,11 +16,11 @@ object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiv
     }
 
     private fun clock(){
-        Thread.sleep(1000,5)
+        Thread.sleep(0,5)
         HAL.setBits(SCLK)
-        Thread.sleep(5000,25)
+        Thread.sleep(0,25)
         HAL.clrBits(SCLK)
-        Thread.sleep(4000,20)
+        Thread.sleep(0,20)
     }
 
     // Envia uma trama para o SerialReceiver identificado o destino em addr e os bits de dados em ‘data’.

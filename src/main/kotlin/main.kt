@@ -1,6 +1,6 @@
 fun main(){
     //KBD.init()
-    LCD.init()
+    SerialEmitter.init()
     //LCD.writeNibbleSerial(true,0b0101)
     //LCD.writeString("lol")
     //LCD.cursor(1,12)
