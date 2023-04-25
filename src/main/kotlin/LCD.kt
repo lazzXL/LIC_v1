@@ -1,47 +1,36 @@
-import LCD.clear
-import LCD.cursor
-import LCD.init
-import LCD.writeNibbleSerial
-import LCD.writeString
-import kotlin.math.floor
-import kotlin.math.pow
-
 object LCD { // Writes to the LCD using the 4-bit interface.
 
     //MUDAR HARDWARE SIMUL
 
     private const val COLS = 16 // Dimensions of the display.
     private const val LINES = 2
+
+    private const val RS = 0b10 //2
+    private const val ENABLE = 0b100 //4
+    private const val DATA_PARALLEL = 0b1111000 //120
+
     private const val T_AS = 40 // Time Intervals
     private const val T_W = 230
     private const val T_C = 500
 
     // Writes a command/data nibble to the LCD in parallel
     private fun writeNibbleParallel(rs: Boolean, data: Int){
-        if (rs) HAL.setBits(2) else HAL.clrBits(2)        //RS
-        HAL.writeBits(120,data shl 3)               //Data
+        if (rs) HAL.setBits(RS) else HAL.clrBits(RS)        //RS
+        HAL.writeBits(DATA_PARALLEL,data shl 3)               //Data
         Thread.sleep(0,T_AS)
-        HAL.setBits(4)                          //Enable 1
+        HAL.setBits(ENABLE)                          //Enable 1
         Thread.sleep(0,T_W)
-        HAL.clrBits(4)                    //Enable 0
+        HAL.clrBits(ENABLE)                    //Enable 0
         Thread.sleep(0,T_C- T_W)
     }
-    fun extractBit(data: Int, k: Int): Int {
-        return (data shr k) and 1
-    }
+
+
 
     // Writes a command/data nibble to the LCD in series
     fun writeNibbleSerial(rs: Boolean, data: Int) {
-        val rsToInt = if (rs) 0b1000000 else 0b0000000
-        for (k in 4 downTo 0) {
-            if (k == 4) HAL.writeBits(64, rsToInt)
-            else {
-               val currentBit = extractBit(data, (k))
-                HAL.writeBits(64, currentBit shl 6)
-                Thread.sleep(0, 500)
-
-            }
-        }
+        val merge = if(rs)data+16 else data
+        println(merge)
+        SerialEmitter.send(SerialEmitter.Destination.LCD,merge)
     }
 
     // Writes a command/data nibble to the LCD
@@ -56,33 +45,30 @@ object LCD { // Writes to the LCD using the 4-bit interface.
     }
 
     // Writes a command to the LCD
-    private fun writeCMD(data: Int) = writeByte(false,data)
+    fun writeCMD(data: Int) = writeByte(false,data)
 
     // Writes data to the LCD
-    private fun writeDATA(data: Int) = writeByte(true,data)
+    fun writeDATA(data: Int) = writeByte(true,data)
 
 
     // Sends the initialization sequence for 4-bit communication. //writeNibble e writeCMD
     fun init(){
-        Thread.sleep(110)
+        Thread.sleep(20)
         writeNibble(false,3)
         Thread.sleep(5)
         writeNibble(false,3)
-        Thread.sleep(1)
+        Thread.sleep(0,100000)
         writeNibble(false,3)
-        Thread.sleep(1)
-        writeCMD(0b0011)
-        writeCMD(0b0010)
-        writeCMD(0b0010)
-        writeCMD(0b1100)
-        writeCMD(0b0000)
-        writeCMD(0b1000)
-        writeCMD(0b0000)
-        writeCMD(0b0001)
-        writeCMD(0b0000)
-        writeCMD(0b0110)
-        writeCMD(0b1111)
-
+        writeNibble(false,2)
+        writeNibble(false,2)
+        writeNibble(false,12)
+        writeNibble(false,0)
+        writeNibble(false,8)
+        writeNibble(false,0)
+        writeNibble(false,1)
+        writeNibble(false,0)
+        writeNibble(false,6)
+        writeCMD(0b00001111 )
     }
 
 
@@ -100,13 +86,13 @@ object LCD { // Writes to the LCD using the 4-bit interface.
 
     // Sends a command to position the cursor (‘line’:0..LINES-1 , ‘column’:0..COLS-1)
     fun cursor(line: Int, column: Int){
-        if(line in 0 until LINES-1 && column in 0 until COLS-1) {
+        if(line in 0 until LINES && column in 0 until COLS) {
             var address: Int = when (line) {
                 0 -> 0x00
                 else -> 0x40
             }
             address += column
-            writeCMD(address + 128)  //DB7 = 1 = 128
+            writeCMD(address + 0x80)  //DB7 = 1 = 128 = 0x80
         }
     }
 
@@ -116,8 +102,15 @@ object LCD { // Writes to the LCD using the 4-bit interface.
     }
 
 }
+/*
 fun main(){
+    /*LCD.init()
+    LCD.writeString("teste teste")
     LCD.clear()
-    LCD.init()
+    LCD.writeString("lol")
+    LCD.cursor(1,5)
+    */
+
 }
 
+*/

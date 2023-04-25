@@ -1,6 +1,9 @@
 object KBD{ // Ler teclas. Métodos retornam ‘0’..’9’,’#’,’*’ ou NONE.
 
     private const val NONE = 0.toChar()
+    private const val K_ack = 0b10000000
+    private const val K_val = 0b00010000
+    private const val K_03  = 0b00001111
     private var initialized = false
 
 
@@ -15,9 +18,9 @@ object KBD{ // Ler teclas. Métodos retornam ‘0’..’9’,’#’,’*’ ou
 
     // Retorna de imediato a tecla premida ou NONE se não há tecla premida.
     private fun getKey(): Char {
-        if(HAL.isBit(16)) {
+        if(HAL.isBit(K_val)) {
             // Read the bits from the keypad
-            val bits = HAL.readBits(15)
+            val bits = HAL.readBits(K_03)
             // Check which key is pressed
             val key = when (bits) {
                 0 -> '1'
@@ -34,11 +37,11 @@ object KBD{ // Ler teclas. Métodos retornam ‘0’..’9’,’#’,’*’ ou
                 11 -> '#'
                 else -> NONE
             }
-            HAL.setBits(1)
-            while (HAL.isBit(16)) {
+            HAL.setBits(K_ack)
+            while (HAL.isBit(K_val)) {
                 Thread.sleep(50)
             }
-            HAL.clrBits(1)
+            HAL.clrBits(K_ack)
             return key
         }
         return NONE
