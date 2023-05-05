@@ -42,10 +42,10 @@ object LCD { // Writes to the LCD using the 4-bit interface.
     }
 
     // Writes a command to the LCD
-    fun writeCMD(data: Int) = writeByte(false,data)
+    private fun writeCMD(data: Int) = writeByte(false,data)
 
     // Writes data to the LCD
-    fun writeDATA(data: Int) = writeByte(true,data)
+    private fun writeDATA(data: Int) = writeByte(true,data)
 
 
     // Sends the initialization sequence for 4-bit communication. //writeNibble e writeCMD

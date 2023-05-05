@@ -2,15 +2,18 @@ object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiv
 
     enum class Destination {LCD, DOOR}
     private const val SS = 0b10 //
-    private const val DATA_SERIAL = 0b1 //
     private const val SCLK = 0b100 //
+    private const val DATA_SERIAL = 0b1 //
+    private const val DATA_DOOR = 0b10000 //
     private var initialized = false
+    private const val busy = 0b1000
 
     // Inicia a classe
     fun init() {
         if (!initialized) {
             HAL.init()
             HAL.setBits(SS)
+
             initialized = true
         }
     }
@@ -33,11 +36,19 @@ object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiv
             }
             HAL.setBits(SS)
         } else{
-            TODO()
+            if(!isBusy()){
+                HAL.clrBits(SS)
+                for(bit in 4 downTo  0) {
+                    HAL.writeBits(DATA_DOOR, (data shr bit) and 1)
+                    clock()
+                }
+                HAL.setBits(SS)
+            }
         }
     }
 
     // Retorna true se o canal série estiver ocupado
-    fun isBusy(): Boolean = TODO()
+    fun isBusy(): Boolean = HAL.isBit(busy)
+
 
 }
