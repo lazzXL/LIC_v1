@@ -11,14 +11,15 @@ object User {
         val newUserIN = userArray.last().split("|")[0] + 1
         FileAccess.writeFile(userFile, "$newUserIN | $userName | $PIN")
     }
+
     fun removeUser(UIN: Int) = FileAccess.editFile(userFile, UIN, "User $UIN removed")
 
     fun editPin(UIN: Int, PIN: Int) {
         val userLine = userArray[UIN].split("|")
         var newUserLine = emptyArray<String>()
-        for (i in userLine.indices) newUserLine += if(i != 2) userLine[i] else PIN.toString()
+        for (i in userLine.indices) newUserLine += if (i != 2) userLine[i] else PIN.toString()
         val newUserLineString = newUserLine.joinToString { " | " }
         FileAccess.editFile(userFile, UIN, "$newUserLineString")
     }
-
 }
+
