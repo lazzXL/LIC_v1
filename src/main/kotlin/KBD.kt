@@ -1,6 +1,6 @@
 object KBD{ // Ler teclas. Métodos retornam ‘0’..’9’,’#’,’*’ ou NONE.
 
-    private const val NONE = 0.toChar()
+    private const val NONE = 'Z'
     private const val K_ack = 0b00000001
     private const val K_val = 0b00010000
     private const val K_03  = 0b00001111

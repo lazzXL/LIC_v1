@@ -15,6 +15,10 @@ object User {
     fun checkUser(UIN: String, PIN: String) : Boolean = userArray[UIN.toInt()].split(";")[1] == PIN
     fun removeUser(UIN: Int) = FileAccess.editFile(userFile, UIN, "User $UIN removed")
 
+    fun checkMessage(UIN: String): Boolean = userArray[UIN.toInt()].split(";").lastIndex == 3
+
+    fun getMessage(UIN: String) : String = userArray[UIN.toInt()].split(";")[3]
+
     fun editPin(UIN: Int, PIN: Int) {
         val userLine = userArray[UIN].split(";")
         var newUserLine = emptyArray<String>()

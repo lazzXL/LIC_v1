@@ -6,14 +6,17 @@ fun init() {
 }
 fun accessMode() {
     init()
-
+    login()
 
 }
 fun login() {
+    var insertedUIN: String
+    var insertedPIN: String
     do {
-        val insertedUIN = TUI.readUIN("Insert UIN")
-        val insertedPIN = TUI.readPIN("Insert PIN")
+        insertedUIN = TUI.readUIN("Insert UIN")
+        insertedPIN = TUI.readPIN("Insert PIN")
     } while (!TUI.auth(insertedUIN, insertedPIN))
+    TUI.writeMessage(insertedUIN)
 }
 
 fun maintenanceMode() {
