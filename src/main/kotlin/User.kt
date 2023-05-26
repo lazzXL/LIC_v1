@@ -2,14 +2,13 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object User {
-    private val userFile = FileAccess.openFile("users.txt")
+    private val userFile = FileAccess.openFile("USERS.txt")
     private var userArray = FileAccess.readFile(userFile)
     fun newUser(userName: String, PIN: Int) {
-        if (!FileAccess.openFile("users.txt").exists()) {
-            FileAccess.createFile("users.txt")
-        }
-        val newUserIN = userArray.last().split("|")[0] + 1
-        FileAccess.writeFile(userFile, "$newUserIN | $userName | $PIN")
+        val newUserIN = userArray.last().split("|")[0].toInt() + 1
+        if (newUserIN <= 9) FileAccess.writeFile(userFile, "00$newUserIN | $userName | $PIN")
+        else if (newUserIN <= 99) FileAccess.writeFile(userFile, "0$newUserIN | $userName | $PIN")
+        else FileAccess.writeFile(userFile, "$newUserIN | $userName | $PIN")
     }
 
     fun removeUser(UIN: Int) = FileAccess.editFile(userFile, UIN, "User $UIN removed")
