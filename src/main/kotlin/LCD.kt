@@ -3,8 +3,8 @@ object LCD { // Writes to the LCD using the 4-bit interface.
     private const val COLS = 16 // Dimensions of the display.
     private const val LINES = 2
 
-    private const val RS = 0b10 //2
-    private const val ENABLE = 0b100 //4
+    private const val RS = 0b1 //
+    private const val ENABLE = 0b10 //
     private const val DATA_PARALLEL = 0b1111000 //120
 
     private const val T_AS = 40 // Time Intervals
@@ -26,13 +26,14 @@ object LCD { // Writes to the LCD using the 4-bit interface.
 
     // Writes a command/data nibble to the LCD in series
     fun writeNibbleSerial(rs: Boolean, data: Int) {
-        val merge = if(rs)data+16 else data
+        val merge = if(rs) (data shl 1) + 1 else data shl 1
+        print("$merge:")
         SerialEmitter.send(SerialEmitter.Destination.LCD,merge)
     }
 
     // Writes a command/data nibble to the LCD
     private fun writeNibble(rs: Boolean, data: Int) {
-        writeNibbleParallel(rs,data)
+        writeNibbleSerial(rs,data)
     }
 
     // Writes a command/data byte to the LCD // Envia um byte para LCD, dividir e chama writeNibble
@@ -48,7 +49,7 @@ object LCD { // Writes to the LCD using the 4-bit interface.
     private fun writeDATA(data: Int) = writeByte(true,data)
 
 
-    // Sends the initialization sequence for 4-bit communication. //writeNibble e writeCMD
+    // Sends the initialization sequence for 4-bit communication.
     fun init(){
         Thread.sleep(20)
         writeNibble(false,3)

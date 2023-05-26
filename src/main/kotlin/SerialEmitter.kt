@@ -1,19 +1,20 @@
 object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiver.
 
     enum class Destination {LCD, DOOR}
-    private const val SS = 0b10 //
-    private const val SCLK = 0b100 //
-    private const val DATA_SERIAL = 0b1 //
-    private const val DATA_DOOR = 0b10000 //
+    private const val SCLK      = 0b00000010 // Bit 1 Output
+    private const val SS_LCD    = 0b00000100 // Bit 2 Output
+    private const val DATA_LCD  = 0b00001000 // Bit 3 Output
+    private const val SS_DOOR   = 0b00010000 // Bit 4 Output
+    private const val DATA_DOOR = 0b00100000 // Bit 5 Output
     private var initialized = false
-    private const val busy = 0b1000
+    private const val busy = 0b00100000 // Bit 5 Input
 
     // Inicia a classe
     fun init() {
         if (!initialized) {
             HAL.init()
-            HAL.setBits(SS)
-
+            HAL.setBits(SS_LCD)
+            HAL.setBits(SS_DOOR)
             initialized = true
         }
     }
@@ -29,21 +30,26 @@ object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiv
     // Envia uma trama para o SerialReceiver identificado o destino em addr e os bits de dados em ‘data’.
     fun send(addr: Destination, data: Int) {
         if(addr == Destination.LCD){
-            HAL.clrBits(SS)
-            for(bit in 4 downTo  0) {
-                HAL.writeBits(DATA_SERIAL, (data shr bit) and 1)
+            HAL.clrBits(SS_LCD)
+            for(bit in 0 .. 4) {
+                var bitValue = (data shr bit) and 1
+                if(bitValue==1)HAL.setBits(DATA_LCD) else HAL.clrBits((DATA_LCD))
                 clock()
             }
-            HAL.setBits(SS)
+            HAL.setBits(SS_LCD)
+            println()
         } else{
-            if(!isBusy()){
-                HAL.clrBits(SS)
-                for(bit in 4 downTo  0) {
-                    HAL.writeBits(DATA_DOOR, (data shr bit) and 1)
-                    clock()
-                }
-                HAL.setBits(SS)
+            while(isBusy()){}
+            HAL.clrBits(SS_DOOR)
+            for(bit in 0 ..4) {
+                var bitValue = (data shr bit) and 1
+                if(bitValue==1)HAL.setBits(DATA_DOOR) else HAL.clrBits(DATA_DOOR)
+                print("$bitValue ")
+                clock()
             }
+            HAL.setBits(SS_DOOR)
+            println()
+
         }
     }
 
