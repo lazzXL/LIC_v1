@@ -19,6 +19,8 @@ object User {
 
     fun getMessage(UIN: String) : String = userArray[UIN.toInt()].split(";")[3]
 
+    fun getName(UIN: String) : String = userArray[UIN.toInt()].split(";")[2]
+
     fun editPin(UIN: Int, PIN: Int) {
         val userLine = userArray[UIN].split(";")
         var newUserLine = emptyArray<String>()

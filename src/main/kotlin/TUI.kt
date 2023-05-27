@@ -24,7 +24,19 @@ fun readPIN(message: String): String {
 }
 fun auth(UIN: String, PIN: String): Boolean = User.checkUser(UIN, PIN)
 
-fun writeMessage(UIN: String) = if (User.checkMessage(UIN)) LCD.writeString(User.getMessage(UIN)) else null
+fun writeMessage(UIN: String) = if (User.checkMessage(UIN)) {
+    if (KBD.waitKey(5) != '*') {
+        LCD.writeString(User.getName(UIN))
+        LCD.cursor(1, 0)
+        LCD.writeString(User.getMessage(UIN))
+    } else {
+        LCD.writeString(User.getName(UIN))
+    }
+} else {
+    LCD.writeString(User.getName(UIN))
+}
+
+
 
 fun readUIN(message: String): String {
     var uinArray = emptyArray<Char>()

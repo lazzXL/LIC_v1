@@ -19,12 +19,13 @@ fun main(){
         println(KBD.getKey())
         Thread.sleep(500)
     }*/
-
+/*
     //DOOR TEST
     DoorMechanism.open(1)
     while(!DoorMechanism.finished()){}
     DoorMechanism.close(1)
-
+*/
+    accessMode()
 
 }
 
