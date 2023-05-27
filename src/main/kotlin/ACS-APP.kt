@@ -4,6 +4,8 @@ fun init() {
     LCD.init()
     DoorMechanism.init()
 }
+
+
 fun accessMode() {
     init()
     login()

@@ -2,10 +2,10 @@ object TUI {
 fun readPIN(message: String): String {
     var pinArray = emptyArray<Char>()
     var curColumn = 0
+    LCD.cursor(0, 0)
+    LCD.writeString(message)
     while(pinArray.size < 4 ) {
-        LCD.cursor(0, 0)
-        LCD.writeString(message)
-        var newKey = KBD.waitKey(5)
+        var newKey = KBD.waitKey(5000)
         if(newKey != 'Z') {
             LCD.cursor(1, curColumn)
             LCD.writeString("*")
@@ -41,10 +41,10 @@ fun writeMessage(UIN: String) = if (User.checkMessage(UIN)) {
 fun readUIN(message: String): String {
     var uinArray = emptyArray<Char>()
     var curColumn = 0
+    LCD.cursor(0, 0)
+    LCD.writeString(message)
     while(uinArray.size < 3) {
-        LCD.cursor(0, 0)
-        LCD.writeString(message)
-        var newKey = KBD.waitKey(5)
+        var newKey = KBD.waitKey(5000)
         if(newKey != 'Z') {
             LCD.cursor(1, curColumn)
             LCD.writeString(newKey.toString())
