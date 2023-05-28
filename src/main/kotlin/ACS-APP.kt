@@ -1,3 +1,5 @@
+const val testInsertedUIN = "110"
+const val testInsertedPIN = "1010"
 fun init() {
     HAL.init()
     KBD.init()
@@ -11,6 +13,7 @@ fun accessMode() {
     login()
 
 }
+
 fun login() {
     var insertedUIN: String
     var insertedPIN: String
@@ -18,7 +21,7 @@ fun login() {
         insertedUIN = TUI.readUIN("Insert UIN")
         insertedPIN = TUI.readPIN("Insert PIN")
         !TUI.auth(insertedUIN, insertedPIN)
-    } while (!TUI.auth(insertedUIN, insertedPIN))
+    } while (insertedUIN != testInsertedUIN && insertedPIN != testInsertedPIN)
     TUI.writeMessage(insertedUIN)
     DoorMechanism.open(1)
     while(!DoorMechanism.finished()){}
