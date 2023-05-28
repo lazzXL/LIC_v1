@@ -20,7 +20,6 @@ fun login() {
     do {
         insertedUIN = TUI.readUIN("Insert UIN")
         insertedPIN = TUI.readPIN("Insert PIN")
-        !TUI.auth(insertedUIN, insertedPIN)
     } while (insertedUIN != testInsertedUIN && insertedPIN != testInsertedPIN)
     TUI.writeMessage(insertedUIN)
     DoorMechanism.open(1)
