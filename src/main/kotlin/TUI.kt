@@ -10,8 +10,10 @@ fun readPIN(message: String): String {
             LCD.cursor(1, curColumn)
             LCD.writeString("*")
             curColumn++
+        } else {
+            return errorValue
         }
-        if (newKey == '*' || newKey == 'Z') {
+        if (newKey == '*') {
             pinArray = emptyArray()
             LCD.clear()
             curColumn = 0
@@ -25,13 +27,16 @@ fun readPIN(message: String): String {
 fun auth(UIN: String, PIN: String): Boolean = User.checkUser(UIN, PIN)
 
 fun writeMessage(UIN: String) = if (User.checkMessage(UIN)) {
-    if (KBD.waitKey(5) != '*') {
         LCD.writeString(User.getName(UIN))
         LCD.cursor(1, 0)
         LCD.writeString(User.getMessage(UIN))
-    } else {
-        LCD.writeString(User.getName(UIN))
-    }
+        if(KBD.waitKey(5000) != '*') {
+            LCD.clear()
+            LCD.writeString(User.getName(UIN))
+        } else {
+            LCD.clear()
+        }
+
 } else {
     LCD.writeString(User.getName(UIN))
 }
@@ -49,8 +54,10 @@ fun readUIN(message: String): String {
             LCD.cursor(1, curColumn)
             LCD.writeString(newKey.toString())
             curColumn++
+        } else {
+            return errorValue
         }
-        if (newKey == '*' || newKey == 'Z') {
+        if (newKey == '*') {
             uinArray = emptyArray()
             LCD.clear()
             curColumn = 0
