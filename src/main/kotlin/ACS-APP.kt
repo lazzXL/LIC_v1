@@ -3,10 +3,14 @@ import User.checkUser
 import User.getUser
 import User.newUser
 import User.removeUser
+import User.usersInit
+import User.usersWrite
+import kotlin.concurrent.thread
+import kotlin.system.exitProcess
 
 public const val  errorValue = "error"
 const val CANCEL = "CANCEL"
-const val maintenance = false
+const val maintenance = true
 const val maxMessageSize = 15 // TIAGO QUAL É o TAMANHO MAXIMO QUE cabE no baguio
 fun init() {
     HAL.init()
@@ -48,6 +52,46 @@ fun login() {
         }
     }
 }
+fun shutdownMaintenanceMode() {
+    clearConsole()
+
+    val shutdownMessage = """
+        .----------------.  .----------------.  .----------------. 
+        | .--------------. || .--------------. || .--------------. |
+        | |      __      | || |     ______   | || |    _______   | |
+        | |     /  \     | || |   .' ___  |  | || |   /  ___  |  | |
+        | |    / /\ \    | || |  / .'   \_|  | || |  |  (__ \_|  | |
+        | |   / ____ \   | || |  | |         | || |   '.___`-.   | |
+        | | _/ /    \ \_ | || |  \ `.___.'\  | || |  |`\____) |  | |
+        | ||____|  |____|| || |   `._____.'  | || |  |_______.'  | |
+        | |              | || |              | || |              | |
+        | '--------------' || '--------------' || '--------------' |
+        | '----------------'  '----------------'  '---------------'| 
+        |==========================================================|
+        |                                                          | 
+        |                  Encerrando o sistema...                 |
+        |                                                          |
+        |==========================================================|
+        """.trimIndent()
+
+    print(shutdownMessage)
+
+    val animationDelay = 300L // Delay entre cada quadro da animação em milissegundos
+    val frames = listOf("◐", "◓", "◑", "◒") // Quadros da animação
+    thread {
+        while (true) {
+            frames.forEach { frame ->
+                print("\r$frame")
+                Thread.sleep(animationDelay)
+            }
+        }
+    }
+}
+
+
+
+
+
 fun printMaintenanceModeMenu() {
     val menu = """
 | .----------------.  .----------------.  .----------------. 
@@ -82,6 +126,7 @@ fun clearConsole() {
     System.out.flush()
 }
 fun maintenanceMode() {
+    usersInit()
     while (maintenance) {
         clearConsole()
         printMaintenanceModeMenu()
@@ -98,7 +143,12 @@ fun maintenanceMode() {
 }
 
 fun turnOffSystemMM() {
-    TODO()
+    usersWrite()
+    shutdownMaintenanceMode()
+    Thread.sleep(10000)
+    exitProcess(1)
+
+
 }
 fun addMessageMM() {
     var sure = false
