@@ -1,5 +1,4 @@
-0;1249;Alan Turing;Turing machine is ready;
-1;2072;George Boole;
-2;0;Maurice Karnaugh;Simplification is possible;
-3;0;John von Neumann;
-6;0;Kathleen Booth;
+0;1001;User0;
+1;5555;User1;
+2;1111;User?;
+3;5555;User4;HAHA

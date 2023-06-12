@@ -1,32 +1,39 @@
 object TUI {
-fun readPIN(message: String): String {
-    var pinArray = emptyArray<Char>()
-    var curColumn = 0
-    LCD.cursor(0, 0)
-    LCD.writeString(message)
-    while(pinArray.size < 4 ) {
-        var newKey = KBD.waitKey(5000)
-        if(newKey != 'Z') {
-            LCD.cursor(1, curColumn)
-            LCD.writeString("*")
-            curColumn++
-        } else {
-            return errorValue
-        }
-        if (newKey == '*') {
-            pinArray = emptyArray()
-            LCD.clear()
-            curColumn = 0
-        } else {
-            pinArray += newKey
-        }
-    }
-    LCD.clear()
-    return pinArray.toString()
-}
-fun auth(UIN: String, PIN: String): Boolean = User.checkUser(UIN, PIN)
 
-fun writeMessage(UIN: String) = if (User.checkMessage(UIN)) {
+    const val CANCEL = "CANCEL"
+
+    fun readPIN(message: String): String {
+        LCD.clear()
+        var pinString = ""
+        var curColumn = 0
+        LCD.writeString(message)
+        while(pinString.length < 4 ) {
+            val newKey = KBD.waitKey(5000)
+            if (newKey == '*') {
+                if(pinString.isEmpty()){
+                    LCD.clear()
+                    return CANCEL
+                } else {
+                    readPIN(message)
+                }
+            }
+            else if(newKey != 'Z') {
+                pinString += newKey
+                LCD.cursor(1, curColumn)
+                LCD.writeString("*")
+                curColumn++
+            } else {
+                LCD.clear()
+                return CANCEL
+            }
+
+        }
+        LCD.clear()
+        return pinString
+    }
+    fun auth(UIN: Int, PIN: String): Boolean = User.checkUser(UIN, PIN)
+    /*
+    fun writeMessage(UIN: String) = if (User.checkMessage(UIN)) {
         LCD.writeString(User.getName(UIN))
         LCD.cursor(1, 0)
         LCD.writeString(User.getMessage(UIN))
@@ -37,45 +44,45 @@ fun writeMessage(UIN: String) = if (User.checkMessage(UIN)) {
             LCD.clear()
         }
 
-} else {
-    LCD.writeString(User.getName(UIN))
-}
-
-
-
-fun readUIN(message: String): String {
-    var uinArray = emptyArray<Char>()
-    var curColumn = 0
-    LCD.cursor(0, 0)
-    LCD.writeString(message)
-    while(uinArray.size < 3) {
-        var newKey = KBD.waitKey(5000)
-        if(newKey != 'Z') {
-            LCD.cursor(1, curColumn)
-            LCD.writeString(newKey.toString())
-            curColumn++
-        } else {
-            return errorValue
-        }
-        if (newKey == '*') {
-            uinArray = emptyArray()
-            LCD.clear()
-            curColumn = 0
-        } else {
-            uinArray += newKey
-        }
+    } else {
+        LCD.writeString(User.getName(UIN))
     }
-    LCD.clear()
-    return uinArray.toString()
-}
+    */
 
-fun clearLCD() {
 
-    TODO()
-}
-fun readObjects() {
-    TODO()
-}
+    fun readUIN(message: String): String {
+        LCD.clear()
+        var uinString = ""
+        var curColumn = 0
+        LCD.writeString(message)
+        while(uinString.length < 3) {
+            val newKey = KBD.waitKey(5000)
+            if (newKey == '*') {
+                if (uinString.isEmpty()) {
+                    LCD.clear()
+                    return CANCEL
+                } else {
+                    readUIN(message)
+                }
+            } else if(newKey != 'Z') {
+                uinString += newKey
+                LCD.cursor(1, curColumn)
+                LCD.writeString(newKey.toString())
+                curColumn++
+            } else {
+                return CANCEL
+            }
+        }
+        LCD.clear()
+        return uinString
+    }
+
+    fun clearLCD() {
+
+        TODO()
+    }
+    fun readObjects() {
+        TODO()
+    }
 
 }
-
