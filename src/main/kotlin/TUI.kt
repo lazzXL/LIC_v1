@@ -1,7 +1,5 @@
 object TUI {
 
-    const val CANCEL = "CANCEL"
-
     fun readPIN(message: String): String {
         LCD.clear()
         var pinString = ""
@@ -31,7 +29,7 @@ object TUI {
         LCD.clear()
         return pinString
     }
-    fun auth(UIN: Int, PIN: String): Boolean = User.checkUser(UIN, PIN)
+
     /*
     fun writeMessage(UIN: String) = if (User.checkMessage(UIN)) {
         LCD.writeString(User.getName(UIN))
@@ -76,13 +74,4 @@ object TUI {
         LCD.clear()
         return uinString
     }
-
-    fun clearLCD() {
-
-        TODO()
-    }
-    fun readObjects() {
-        TODO()
-    }
-
 }

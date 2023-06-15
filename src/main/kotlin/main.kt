@@ -41,16 +41,29 @@ fun main(){
 */
 
 
-
+/*
     //println(getUser(2))
     //addUserMessage(2,"LOL")
     //editPin(2,"0000")
     //accessMode()
-    //Log.newLog(123)
-    //Thread.sleep(5000)
-    //Log.newLog(199)
-    //Log.writeLog()
-    maintenanceMode()
-
+    Log.init()
+    Thread.sleep(5000)
+    Log.newLog(123)
+    Thread.sleep(5000)
+    Log.newLog(199)
+    Thread.sleep(5000)
+    Log.writeLog()*/
+    init()
+    while(true) {
+        while (!HAL.isBit(maintenance)) {
+            accessMode()
+            Log.writeLog()
+        }
+        LCD.clear()
+        LCD.writeString("Out Of Service")
+        while (HAL.isBit(maintenance)) {
+            maintenanceMode()
+        }
+    }
 }
 

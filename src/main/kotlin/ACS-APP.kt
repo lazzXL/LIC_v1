@@ -8,56 +8,70 @@ import User.usersWrite
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
-public const val  errorValue = "error"
+//public const val  errorValue = "error"
 const val CANCEL = "CANCEL"
-const val maintenance = true
-const val maxMessageSize = 16 // TIAGO QUAL É o TAMANHO MAXIMO QUE cabE no baguio
+const val maintenance = 0b10000000
+const val maxMessageSize = 16
 
 
 fun accessMode() {
-    init()
     login()
 }
 
 fun init() {
     HAL.init()
-    KBD.init()
     SerialEmitter.init()
+    KBD.init()
     LCD.init()
     DoorMechanism.init()
+    usersInit()
+    Log.init()
     //DoorMechanism.close(1)
     //while(!DoorMechanism.finished()){}
 
 }
 fun login() {
-    while (!maintenance) {
-        var insertedUIN: String
-        var insertedPIN: String = ""
-        do {
-            insertedUIN = TUI.readUIN("Insert UIN:")
-            if (insertedUIN != CANCEL) insertedPIN = TUI.readPIN("Insert PIN:")
-        } while (insertedUIN == CANCEL || insertedPIN == CANCEL || !checkUser(insertedUIN.toInt(), insertedPIN))
-        val info = getUser(insertedUIN.toInt())
-        LCD.writeString("${info!!.name}")
-        LCD.cursor(1, 0)
-        LCD.writeString("${info.message}")
-        DoorMechanism.open(1)
-        val afterKey = KBD.waitKey(5000)
-        if (afterKey == '#') println("novo pin")
-        else if (afterKey == '*') addUserMessage(insertedUIN.toInt(), "")
-        while (!DoorMechanism.finished()) {
-        }
-        DoorMechanism.close(1)
-        while (!DoorMechanism.finished()) {
+    var insertedUIN: String
+    var insertedPIN = ""
+    do {
+        insertedUIN = TUI.readUIN("Insert UIN:")
+        if (insertedUIN != CANCEL) insertedPIN = TUI.readPIN("Insert PIN:")
+        if(HAL.isBit(maintenance))break
+    } while (insertedUIN == CANCEL || insertedPIN == CANCEL || !checkUser(insertedUIN.toInt(), insertedPIN))
+    if (HAL.isBit(maintenance))return
+
+    Log.newLog(insertedUIN.toInt())
+
+    val info = getUser(insertedUIN.toInt())
+
+    LCD.writeString(info!!.name)
+    LCD.cursor(1, 0)
+    LCD.writeString(info.message)
+
+    DoorMechanism.open(1)
+
+    val afterKey = KBD.waitKey(5000)
+    if (afterKey == '#') {
+        val newPin1 = TUI.readPIN("Novo PIN:")
+        if(newPin1 != CANCEL) {
+            val newPin2 = TUI.readPIN("Confirmar PIN:")
+            if(newPin2 != CANCEL){
+                if(newPin1 == newPin2)User.editPin(insertedUIN.toInt(),newPin1)
+            }
         }
     }
+    else if (afterKey == '*') addUserMessage(insertedUIN.toInt(), "")
+
+    while (!DoorMechanism.finished()) {}
+    DoorMechanism.close(1)
+    //while (!DoorMechanism.finished()) {
+    //}
 }
 
 
 
 fun maintenanceMode() {
-    usersInit() //acho q aqui n e pra ler, so quando o sistema inicia
-    while (maintenance) {
+    while (HAL.isBit(maintenance)) {
         clearConsole()
         printMaintenanceModeMenu()
         val option = readLine()?.toIntOrNull()
@@ -75,7 +89,7 @@ fun maintenanceMode() {
 fun turnOffSystemMM() {
     usersWrite()
     shutdownMaintenanceMode()
-    Thread.sleep(10000)
+    Thread.sleep(5000)
     exitProcess(1)
 
 
@@ -83,9 +97,9 @@ fun turnOffSystemMM() {
 fun addMessageMM() {
     var sure = false
     var sureMessage = true
-    var userUIN : Int = 0
+    var userUIN = 0
     var userName : String? = "."
-    var userMessage : String = "."
+    var userMessage = "."
     while (!sure) {
         do {
             clearConsole()
@@ -112,7 +126,7 @@ fun addMessageMM() {
             when (option) {
                 1 -> {sure = true ; sureMessage = false}
                 2 -> sureMessage = true
-                3 -> {sure = false ; sureMessage = false}
+                3 -> break //{sure = false ; sureMessage = false}
                 4 -> return
                 else -> sure = false
             }
@@ -149,9 +163,9 @@ fun removeUserMM () {
     return
 }
 fun insertUserMM () {
-    var sure : Boolean = false
-    var newUserName : String = ""
-    var newUserPin : String = ""
+    var sure = false
+    var newUserName = ""
+    var newUserPin = ""
     while (!sure) {
         do {
             clearConsole()
@@ -205,7 +219,7 @@ fun shutdownMaintenanceMode() {
     thread {
         while (true) {
             frames.forEach { frame ->
-                print("\r$frame")
+                print("\r\t\t\t\t\t\t\t $frame")
                 Thread.sleep(animationDelay)
             }
         }

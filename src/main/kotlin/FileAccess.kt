@@ -1,7 +1,6 @@
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.PrintWriter
-import java.time.LocalDateTime
 
 data class LogInfo (val UIN:Int, val time:String?)
 data class UserInfo(val UIN:String, var PIN:String, val name:String, var message:String)
@@ -39,11 +38,13 @@ object FileAccess {
         write.close()
     }
 
-    fun writeFileLog(logs : List<LogInfo>){
+    fun writeFileLog(logs : List<LogInfo>, startTime: String, endTime:String){
         val write = createWriter("Logs.txt")
+        write.println("System initialized at $startTime")
         for(i in logs){
             write.println("User ${i.UIN} entered at ${i.time}")
         }
+        write.println("System shut down at $endTime")
         write.close()
     }
 
