@@ -1,4 +1,5 @@
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 object Log {
 
@@ -6,7 +7,9 @@ object Log {
 
 
     fun newLog(UIN: Int) {
-        val log = LogInfo(UIN, LocalDateTime.now())
+        var formatter = DateTimeFormatter.ofPattern("hh:mm - dd/MM/yyyy")
+        var formattedTimeandDate = LocalDateTime.now().format(formatter)
+        val log = LogInfo(UIN, formattedTimeandDate)
         logs = logs + log
     }
 

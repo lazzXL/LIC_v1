@@ -3,7 +3,7 @@ import java.io.FileReader
 import java.io.PrintWriter
 import java.time.LocalDateTime
 
-data class LogInfo (val UIN:Int, val time:LocalDateTime)
+data class LogInfo (val UIN:Int, val time:String?)
 data class UserInfo(val UIN:String, var PIN:String, val name:String, var message:String)
 
 object FileAccess {
