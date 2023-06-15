@@ -1,5 +1,3 @@
-import java.io.File
-
 fun main(){
    /*
     SerialEmitter.init()
@@ -41,16 +39,6 @@ fun main(){
     usersWrite()
 
 */
-    usersInit()
-    newUser("User0", 1001)
-    newUser("User1", 5555)
-    newUser("User3", 1001)
-    newUser("User4", 5555)
-    removeUser(2)
-    newUser("User?", 5555)
-    addUserMessage(3,"HAHA")
-    editPin(2,"1111")
-    usersWrite()
 
 
 
@@ -58,6 +46,11 @@ fun main(){
     //addUserMessage(2,"LOL")
     //editPin(2,"0000")
     //accessMode()
+    //Log.newLog(123)
+    //Thread.sleep(5000)
+    //Log.newLog(199)
+    //Log.writeLog()
+    maintenanceMode()
 
 }
 

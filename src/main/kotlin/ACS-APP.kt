@@ -11,7 +11,14 @@ import kotlin.system.exitProcess
 public const val  errorValue = "error"
 const val CANCEL = "CANCEL"
 const val maintenance = true
-const val maxMessageSize = 15 // TIAGO QUAL É o TAMANHO MAXIMO QUE cabE no baguio
+const val maxMessageSize = 16 // TIAGO QUAL É o TAMANHO MAXIMO QUE cabE no baguio
+
+
+fun accessMode() {
+    init()
+    login()
+}
+
 fun init() {
     HAL.init()
     KBD.init()
@@ -22,13 +29,6 @@ fun init() {
     //while(!DoorMechanism.finished()){}
 
 }
-
-
-fun accessMode() {
-    init()
-    login()
-}
-
 fun login() {
     while (!maintenance) {
         var insertedUIN: String
@@ -52,81 +52,11 @@ fun login() {
         }
     }
 }
-fun shutdownMaintenanceMode() {
-    clearConsole()
-
-    val shutdownMessage = """
-        .----------------.  .----------------.  .----------------. 
-        | .--------------. || .--------------. || .--------------. |
-        | |      __      | || |     ______   | || |    _______   | |
-        | |     /  \     | || |   .' ___  |  | || |   /  ___  |  | |
-        | |    / /\ \    | || |  / .'   \_|  | || |  |  (__ \_|  | |
-        | |   / ____ \   | || |  | |         | || |   '.___`-.   | |
-        | | _/ /    \ \_ | || |  \ `.___.'\  | || |  |`\____) |  | |
-        | ||____|  |____|| || |   `._____.'  | || |  |_______.'  | |
-        | |              | || |              | || |              | |
-        | '--------------' || '--------------' || '--------------' |
-        | '----------------'  '----------------'  '---------------'| 
-        |==========================================================|
-        |                                                          | 
-        |                  Encerrando o sistema...                 |
-        |                                                          |
-        |==========================================================|
-        """.trimIndent()
-
-    print(shutdownMessage)
-
-    val animationDelay = 300L // Delay entre cada quadro da animação em milissegundos
-    val frames = listOf("◐", "◓", "◑", "◒") // Quadros da animação
-    thread {
-        while (true) {
-            frames.forEach { frame ->
-                print("\r$frame")
-                Thread.sleep(animationDelay)
-            }
-        }
-    }
-}
 
 
 
-
-
-fun printMaintenanceModeMenu() {
-    val menu = """
-| .----------------.  .----------------.  .----------------. 
-| .--------------. || .--------------. || .--------------. |
-| |      __      | || |     ______   | || |    _______   | |
-| |     /  \     | || |   .' ___  |  | || |   /  ___  |  | |
-| |    / /\ \    | || |  / .'   \_|  | || |  |  (__ \_|  | |
-| |   / ____ \   | || |  | |         | || |   '.___`-.   | |
-| | _/ /    \ \_ | || |  \ `.___.'\  | || |  |`\____) |  | |
-| ||____|  |____|| || |   `._____.'  | || |  |_______.'  | |
-| |              | || |              | || |              | |
-| '--------------' || '--------------' || '--------------' |
-| '----------------'  '----------------'  '----------------' 
-|
-|          Access Control System - Modo de Manutenção
-|          
-|          1. Inserir utilizador
-|          2. Remover utilizador
-|          3. Adicionar mensagem
-|          4. Desligar sistema
-|          
-|          
-|
-|=============================================================
-|
-    """.trimMargin()
-
-    println(menu)
-}
-fun clearConsole() {
-    print("\u001b[H\u001b[2J")
-    System.out.flush()
-}
 fun maintenanceMode() {
-    usersInit()
+    usersInit() //acho q aqui n e pra ler, so quando o sistema inicia
     while (maintenance) {
         clearConsole()
         printMaintenanceModeMenu()
@@ -177,12 +107,12 @@ fun addMessageMM() {
             println("Qual a mensagem a ser inserida para o utilizador $userName? (max. $maxMessageSize caracteres)")
             userMessage = readln()
             clearConsole()
-            print("Deseja inserir a mensagem $userMessage para o utilizador $userName? 1. Sim 2. Alterar mensagem 3. Alterar utilizador 4. Retornar para o menu")
+            print("Deseja inserir a mensagem: '$userMessage' para o utilizador $userName? \n 1. Sim \n 2. Alterar mensagem \n 3. Alterar utilizador \n 4. Retornar para o menu")
             val option = readLine()?.toIntOrNull()
             when (option) {
-                1 -> sure = true
-                2 -> sureMessage = false
-                3 -> sure = false
+                1 -> {sure = true ; sureMessage = false}
+                2 -> sureMessage = true
+                3 -> {sure = false ; sureMessage = false}
                 4 -> return
                 else -> sure = false
             }
@@ -190,10 +120,9 @@ fun addMessageMM() {
     }
     addUserMessage(userUIN, userMessage)
 }
-
 fun removeUserMM () {
     var sure = false
-    var removeUserUIN : Int = 0
+    var removeUserUIN = 0
     var removeUserName : String? = "."
     while (!sure) {
         do {
@@ -222,7 +151,7 @@ fun removeUserMM () {
 fun insertUserMM () {
     var sure : Boolean = false
     var newUserName : String = ""
-    var newUserPin : Int = 0
+    var newUserPin : String = ""
     while (!sure) {
         do {
             clearConsole()
@@ -232,8 +161,8 @@ fun insertUserMM () {
         do {
             clearConsole()
             println("Insira o PIN do usuário (4 dígitos)")
-            newUserPin = readln().toInt()
-        } while (newUserPin < 1000 || newUserPin > 9999)
+            newUserPin = readln()
+        } while (newUserPin.toInt() < 0 || newUserPin.toInt() > 9999)
         println("Deseja adicionar o utilizador: $newUserName com o PIN: $newUserPin ? \n 1. Sim \n 2. Não \n 3. Retornar ao Menu")
         val option = readLine()?.toIntOrNull()
         sure = when (option) {
@@ -247,3 +176,71 @@ fun insertUserMM () {
     return
 }
 
+fun shutdownMaintenanceMode() {
+    clearConsole()
+
+    val shutdownMessage = """
+        .----------------.  .----------------.  .----------------. 
+        | .--------------. || .--------------. || .--------------. |
+        | |      __      | || |     ______   | || |    _______   | |
+        | |     /  \     | || |   .' ___  |  | || |   /  ___  |  | |
+        | |    / /\ \    | || |  / .'   \_|  | || |  |  (__ \_|  | |
+        | |   / ____ \   | || |  | |         | || |   '.___`-.   | |
+        | | _/ /    \ \_ | || |  \ `.___.'\  | || |  |`\____) |  | |
+        | ||____|  |____|| || |   `._____.'  | || |  |_______.'  | |
+        | |              | || |              | || |              | |
+        | '--------------' || '--------------' || '--------------' |
+        | '----------------'  '----------------'  '---------------'| 
+        |==========================================================|
+        |                                                          | 
+        |                  Encerrando o sistema...                 |
+        |                                                          |
+        |==========================================================|
+        """.trimIndent()
+
+    print(shutdownMessage)
+
+    val animationDelay = 300L // Delay entre cada quadro da animação em milissegundos
+    val frames = listOf("◐", "◓", "◑", "◒") // Quadros da animação
+    thread {
+        while (true) {
+            frames.forEach { frame ->
+                print("\r$frame")
+                Thread.sleep(animationDelay)
+            }
+        }
+    }
+}
+fun printMaintenanceModeMenu() {
+    val menu = """
+| .----------------.  .----------------.  .----------------. 
+| .--------------. || .--------------. || .--------------. |
+| |      __      | || |     ______   | || |    _______   | |
+| |     /  \     | || |   .' ___  |  | || |   /  ___  |  | |
+| |    / /\ \    | || |  / .'   \_|  | || |  |  (__ \_|  | |
+| |   / ____ \   | || |  | |         | || |   '.___`-.   | |
+| | _/ /    \ \_ | || |  \ `.___.'\  | || |  |`\____) |  | |
+| ||____|  |____|| || |   `._____.'  | || |  |_______.'  | |
+| |              | || |              | || |              | |
+| '--------------' || '--------------' || '--------------' |
+| '----------------'  '----------------'  '----------------' 
+|
+|          Access Control System - Modo de Manutenção
+|          
+|          1. Inserir utilizador
+|          2. Remover utilizador
+|          3. Adicionar mensagem
+|          4. Desligar sistema
+|          
+|          
+|
+|=============================================================
+|
+    """.trimMargin()
+
+    println(menu)
+}
+fun clearConsole() {
+    print("\u001b[H\u001b[2J")
+    System.out.flush()
+}

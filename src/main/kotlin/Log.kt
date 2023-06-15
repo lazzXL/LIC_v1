@@ -1,8 +1,17 @@
-import java.io.File
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+
 object Log {
-    fun newLog (event: String) {
-       TODO()
+
+    private var logs = listOf<LogInfo>()
+
+
+    fun newLog(UIN: Int) {
+        val log = LogInfo(UIN, LocalDateTime.now())
+        logs = logs + log
     }
+
+    fun writeLog(){
+        FileAccess.writeFileLog(logs)
+    }
+
 }
