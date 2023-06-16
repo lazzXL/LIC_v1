@@ -15,7 +15,7 @@ object TUI {
                     return readPIN(message)
                 }
             }
-            else if(newKey != 'Z') {
+            else if(newKey != 'Z' && newKey != '#') {
                 pinString += newKey
                 LCD.cursor(1, curColumn)
                 LCD.writeString("*")
