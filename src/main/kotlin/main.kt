@@ -56,6 +56,7 @@ fun main(){
     init()
     while(true) {
         while (!HAL.isBit(maintenance)) {
+            Log.init()
             accessMode()
             Log.writeLog()
         }

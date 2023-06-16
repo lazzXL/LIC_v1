@@ -12,7 +12,7 @@ object TUI {
                     LCD.clear()
                     return CANCEL
                 } else {
-                    readPIN(message)
+                    return readPIN(message)
                 }
             }
             else if(newKey != 'Z') {
@@ -60,7 +60,7 @@ object TUI {
                     LCD.clear()
                     return CANCEL
                 } else {
-                    readUIN(message)
+                    return readUIN(message)
                 }
             } else if(newKey != 'Z') {
                 uinString += newKey

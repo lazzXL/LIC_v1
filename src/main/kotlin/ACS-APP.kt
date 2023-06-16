@@ -1,14 +1,7 @@
-import User.addUserMessage
-import User.checkUser
-import User.getUser
-import User.newUser
-import User.removeUser
-import User.usersInit
-import User.usersWrite
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
-//public const val  errorValue = "error"
+
 const val CANCEL = "CANCEL"
 const val maintenance = 0b10000000
 const val maxMessageSize = 16
@@ -24,10 +17,10 @@ fun init() {
     KBD.init()
     LCD.init()
     DoorMechanism.init()
-    usersInit()
-    Log.init()
-    //DoorMechanism.close(1)
-    //while(!DoorMechanism.finished()){}
+    User.usersInit()
+
+    DoorMechanism.close(1)
+    while(!DoorMechanism.finished()){}
 
 }
 fun login() {
@@ -37,12 +30,12 @@ fun login() {
         insertedUIN = TUI.readUIN("Insert UIN:")
         if (insertedUIN != CANCEL) insertedPIN = TUI.readPIN("Insert PIN:")
         if(HAL.isBit(maintenance))break
-    } while (insertedUIN == CANCEL || insertedPIN == CANCEL || !checkUser(insertedUIN.toInt(), insertedPIN))
+    } while (insertedUIN == CANCEL || insertedPIN == CANCEL || !User.checkUser(insertedUIN.toInt(), insertedPIN))
     if (HAL.isBit(maintenance))return
 
     Log.newLog(insertedUIN.toInt())
 
-    val info = getUser(insertedUIN.toInt())
+    val info = User.getUser(insertedUIN.toInt())
 
     LCD.writeString(info!!.name)
     LCD.cursor(1, 0)
@@ -60,7 +53,7 @@ fun login() {
             }
         }
     }
-    else if (afterKey == '*') addUserMessage(insertedUIN.toInt(), "")
+    else if (afterKey == '*') User.addUserMessage(insertedUIN.toInt(), "")
 
     while (!DoorMechanism.finished()) {}
     DoorMechanism.close(1)
@@ -87,8 +80,9 @@ fun maintenanceMode() {
 }
 
 fun turnOffSystemMM() {
-    usersWrite()
+    User.usersWrite()
     shutdownMaintenanceMode()
+
     Thread.sleep(5000)
     exitProcess(1)
 
@@ -110,7 +104,7 @@ fun addMessageMM() {
             }
             println("Insira o UIN do usuário a se adicionar a mensagem")
             userUIN = readln().toInt()
-            userName = getUser(userUIN)?.name
+            userName = User.getUser(userUIN)?.name
         } while (userName == null)
         do {
             clearConsole()
@@ -132,7 +126,7 @@ fun addMessageMM() {
             }
         } while (sureMessage)
     }
-    addUserMessage(userUIN, userMessage)
+    User.addUserMessage(userUIN, userMessage)
 }
 fun removeUserMM () {
     var sure = false
@@ -148,7 +142,7 @@ fun removeUserMM () {
             }
             println("Insira o UIN do usuário a se remover")
             removeUserUIN = readln().toInt()
-            removeUserName = getUser(removeUserUIN)?.name
+            removeUserName = User.getUser(removeUserUIN)?.name
         } while (removeUserName == null)
         println("Deseja remover o utilizador $removeUserName? \n 1. Sim \n 2. Não \n 3. Retornar ao Menu")
         val option = readLine()?.toIntOrNull()
@@ -159,7 +153,7 @@ fun removeUserMM () {
             else -> false
         }
     }
-    removeUser(removeUserUIN)
+    User.removeUser(removeUserUIN)
     return
 }
 fun insertUserMM () {
@@ -186,7 +180,7 @@ fun insertUserMM () {
             else -> false
         }
     }
-    newUser(newUserName, newUserPin)
+    User.newUser(newUserName, newUserPin)
     return
 }
 
