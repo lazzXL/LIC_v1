@@ -30,23 +30,6 @@ object TUI {
         return pinString
     }
 
-    /*
-    fun writeMessage(UIN: String) = if (User.checkMessage(UIN)) {
-        LCD.writeString(User.getName(UIN))
-        LCD.cursor(1, 0)
-        LCD.writeString(User.getMessage(UIN))
-        if(KBD.waitKey(5000) != '*') {
-            LCD.clear()
-            LCD.writeString(User.getName(UIN))
-        } else {
-            LCD.clear()
-        }
-
-    } else {
-        LCD.writeString(User.getName(UIN))
-    }
-    */
-
 
     fun readUIN(message: String): String {
         LCD.clear()

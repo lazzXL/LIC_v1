@@ -32,7 +32,7 @@ object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiv
         if(addr == Destination.LCD){
             HAL.clrBits(SS_LCD)
             for(bit in 0 .. 4) {
-                var bitValue = (data shr bit) and 1
+                val bitValue = (data shr bit) and 1
                 if(bitValue==1)HAL.setBits(DATA_LCD) else HAL.clrBits((DATA_LCD))
                 clock()
             }
@@ -41,7 +41,7 @@ object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiv
             while(isBusy()){}
             HAL.clrBits(SS_DOOR)
             for(bit in 0 ..4) {
-                var bitValue = (data shr bit) and 1
+                val bitValue = (data shr bit) and 1
                 if(bitValue==1)HAL.setBits(DATA_DOOR) else HAL.clrBits(DATA_DOOR)
                 clock()
             }

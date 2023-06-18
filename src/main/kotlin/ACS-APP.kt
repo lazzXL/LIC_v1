@@ -7,9 +7,24 @@ const val maintenance = 0b10000000
 const val maxMessageSize = 16
 
 
-fun accessMode() {
-    login()
+
+// ACS APP
+fun app(){
+    init()
+    while(true) {
+        while (!HAL.isBit(maintenance)) {
+            Log.init()
+            accessMode()
+            Log.writeLog()
+        }
+        LCD.clear()
+        LCD.writeString("Out Of Service")
+        while (HAL.isBit(maintenance)) {
+            maintenanceMode()
+        }
+    }
 }
+
 
 fun init() {
     HAL.init()
@@ -18,12 +33,12 @@ fun init() {
     LCD.init()
     DoorMechanism.init()
     User.usersInit()
-
     DoorMechanism.close(1)
     while(!DoorMechanism.finished()){}
 
 }
-fun login() {
+
+fun accessMode() {
     var insertedUIN: String
     var insertedPIN = ""
     do {
@@ -78,6 +93,12 @@ fun maintenanceMode() {
     }
     
 }
+
+
+
+
+
+//////////////////////////// MAINTENANCE MODE FUNCTIONS /////////////////////////////////////////
 
 fun turnOffSystemMM() {
     User.usersWrite()

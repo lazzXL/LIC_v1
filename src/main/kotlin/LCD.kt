@@ -25,7 +25,7 @@ object LCD { // Writes to the LCD using the 4-bit interface.
 
 
     // Writes a command/data nibble to the LCD in series
-    fun writeNibbleSerial(rs: Boolean, data: Int) {
+    private fun writeNibbleSerial(rs: Boolean, data: Int) {
         val merge = if(rs) (data shl 1) + 1 else data shl 1
         SerialEmitter.send(SerialEmitter.Destination.LCD,merge)
         Thread.sleep(5)
