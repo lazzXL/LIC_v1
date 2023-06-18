@@ -8,7 +8,7 @@ const val maxMessageSize = 16
 
 
 
-// ACS APP
+// Access Control System - APP
 fun app(){
     init()
     while(true) {
@@ -77,6 +77,7 @@ fun accessMode() {
 }
 
 
+//////////////////////////// MAINTENANCE MODE FUNCTIONS /////////////////////////////////////////
 
 fun maintenanceMode() {
     while (HAL.isBit(maintenance)) {
@@ -91,14 +92,8 @@ fun maintenanceMode() {
             else -> println("Opção Inválida")
         }
     }
-    
+
 }
-
-
-
-
-
-//////////////////////////// MAINTENANCE MODE FUNCTIONS /////////////////////////////////////////
 
 fun turnOffSystemMM() {
     User.usersWrite()
@@ -230,7 +225,7 @@ fun shutdownMaintenanceMode() {
     print(shutdownMessage)
 
     val animationDelay = 300L // Delay entre cada quadro da animação em milissegundos
-    val frames = listOf("◐", "◓", "◑", "◒") // Quadros da animação
+                                                                                                                                                                                                                                                                                                                                                                                                val frames = listOf("◐", "◓", "◑", "◒") // Quadros da animação
     thread {
         while (true) {
             frames.forEach { frame ->
